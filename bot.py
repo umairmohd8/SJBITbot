@@ -1,4 +1,3 @@
-
 import os
 import sys
 import logging
@@ -8,30 +7,34 @@ from private import keys
 
 bot = commands.Bot(command_prefix='+')
 logg = bot.get_channel(846778354157355109)
+last_id = 0
 
 
-@bot.event
+"""@bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f'{ctx.author} Please use the correct argument!')
+        await ctx.send(ctx.author.mention + ' Please use the correct argument!')
+    else:
+        print('something is wrong')
     if isinstance(error, commands.CommandError):
-        await ctx.send(f'{ctx.author} Please use the correct command!')
+        await ctx.send(ctx.author.mention + ' Please use the correct command!')
+        print()"""
 
 
 @bot.command()
 async def load(ctx, extension):
     try:
         bot.load_extension(f'cogs.{extension}')
-
         await logg.send('Loaded' + str(extension))
     except Exception as e:
         logging.error(traceback.format_exc())
-        await logg.send(f'Error {sys.exc_info()[0]} occurred when loading {extension}')
+        # await logg.send(f'Error {sys.exc_info()[0]} occurred when loading {extension}')
 
 
 @bot.command()
 async def unload(ctx, extension):
     bot.unload_extension(f'cogs.{extension}')
+
 
 
 for filename in os.listdir('./cogs'):

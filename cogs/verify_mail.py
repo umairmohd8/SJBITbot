@@ -1,6 +1,8 @@
 import re
 import random
+import datetime
 from discord.ext import commands
+from private import user_db
 
 
 class Mail(commands.Cog):
@@ -20,8 +22,15 @@ class Mail(commands.Cog):
                 usr_mail = usn + '.sjbit.edu.in'
                 mail_res = 'mail verified'
                 code = random.randint(100000, 999999)
+                j_date = datetime.date.today()
+                j_time = datetime.datetime.now().time()
+                user_db.newuser(idn=1, uname=str(user), mail=mail_res,
+                                passw=str(code), vmail="yes", vpass="no",
+                                status=mail_res, join_date=str(j_date),
+                                join_time=str(j_time), count=1)
+
             else:
-                mail_res = 'invalid USN'
+                mail_res = 'invalid USN: ' + usn
                 usr_mail = 'null'
                 code = 'null'
             print(f'{mail_res}- {usr_mail}- {user} - {code} ')
