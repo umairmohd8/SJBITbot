@@ -1,25 +1,22 @@
-import discord
-from private import keys
 from discord.ext import commands
+import datetime
 
 
 class Logger(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.chann = 846778354157355109
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print('bot is online')
+        ch = self.bot.get_channel(self.chann)
+        await ch.send('Bot is online: ' + str(datetime.datetime.now()))
+        print('bot is online: ' + str(datetime.datetime.now()))
 
     @commands.command()
     async def ping(self, ctx):
         await ctx.send('pong!')
-
-    @commands.Bot.event
-    async def on_profanity(self, message, word):
-        ch = commands.Bot.get_channel(846778354157355109)
-        await ch.send('hello')
 
 
 def setup(bot):
