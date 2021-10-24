@@ -5,9 +5,9 @@ import traceback
 from discord.ext import commands
 from private import keys
 
+BOT_LOG = 846778354157355109
+
 bot = commands.Bot(command_prefix='+')
-logg = bot.get_channel(846778354157355109)
-last_id = 0
 
 
 """@bot.event
@@ -22,19 +22,29 @@ async def on_command_error(ctx, error):
 
 
 @bot.command()
+@commands.has_role('Admin')
 async def load(ctx, extension):
+    logg = bot.get_channel(BOT_LOG)
+
     try:
         bot.load_extension(f'cogs.{extension}')
-        await logg.send('Loaded' + str(extension))
+        await logg.send('Loaded ' + str(extension))
     except Exception as e:
         logging.error(traceback.format_exc())
-        # await logg.send(f'Error {sys.exc_info()[0]} occurred when loading {extension}')
+        await logg.send(f'Error {sys.exc_info()[0]} occurred when loading {extension}')
 
 
 @bot.command()
+@commands.has_role('Admin')
 async def unload(ctx, extension):
-    bot.unload_extension(f'cogs.{extension}')
+    logg = bot.get_channel(846778354157355109)
 
+    try:
+        bot.unload_extension(f'cogs.{extension}')
+        await logg.send('Unloaded ' + str(extension))
+    except Exception as e:
+        logging.error(traceback.format_exc())
+        await logg.send(f'Error {sys.exc_info()[0]} occurred when unloading {extension}')
 
 
 for filename in os.listdir('./cogs'):
