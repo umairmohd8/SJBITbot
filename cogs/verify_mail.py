@@ -5,6 +5,7 @@ import datetime
 import discord.utils
 from discord.ext import commands
 from private import newDB
+from access import mail
 
 BOT_LOG = 846778354157355109
 roles = {'verified': 840568002176614400, 'alum': 902217061692997673, 'first': 842427880675999784,
@@ -57,9 +58,6 @@ class Mail(commands.Cog):
 
         return usr_roles
 
-    def send_mail(self):
-        pass
-
     @commands.command()
     async def mail(self, ctx, usn):
         if ctx.channel.id == 842431863829692416:
@@ -77,14 +75,25 @@ class Mail(commands.Cog):
 
                 # getting last ID on the table
                 lastID = newDB.last_id()
-                print(lastID[0])
+                # print(lastID[0])
 
                 db_add = newDB.newUser(idn=lastID[0] + 1, uname=str(user), mail=usr_mail,
                                        passw=str(code), vmail=1, vpass=0,
                                        status=mail_res, join_date=str(j_date),
                                        join_time=str(j_time))
+
+                # adding user to db
                 if db_add == 0:
                     await self.bot.get_channel(BOT_LOG).send(f'{user.mention} added to db.')
+
+                    # mailing code to user
+                    code_res, stat = mail.sendMail(usr_mail, code)
+                    if stat == -1:
+                        await ctx.send(f'{user.mention} Mail verified, failed to send passcode, dm Admin')
+                        await self.bot.get_channel(BOT_LOG).send(f'{user.mention} failed to send passcode, {code_res}')
+                    else:
+                        await ctx.send(f'{user.mention} Mail verified, passcode sent to your mail(check junk folder)')
+                        await self.bot.get_channel(BOT_LOG).send(f'{user.mention} {code_res}')
 
                 else:
                     await self.bot.get_channel(BOT_LOG).send(f'{user.mention} failed to add user to db, {db_add}')
@@ -103,11 +112,20 @@ class Mail(commands.Cog):
     @commands.command()
     @commands.has_role('up')
     async def upmail(self, ctx, usn):
-        print(type(ctx.author))
+        user = ctx.author
         up_mail = usn + '@sjbit.edu.in'
         print(up_mail)
         up_res = newDB.updateMail(str(ctx.author), up_mail)
-        self.send_mail()
+        # ADD A FUNCTION TO SEND MAIL AFTER UPDATING MAIL
+        up_code = newDB.getPass(str(ctx.author))
+
+        code_res, stat = mail.sendMail(up_mail, up_code[0])
+        if stat == -1:
+            await ctx.send(f'{user.mention} Mail verified, failed to send passcode, dm Admin')
+            await self.bot.get_channel(BOT_LOG).send(f'{user.mention} failed to send passcode, {code_res}')
+        else:
+            await ctx.send(f'{user.mention} Mail verified, passcode sent to your mail(check junk folder)')
+            await self.bot.get_channel(BOT_LOG).send(f'{user.mention} {code_res}')
         await self.bot.get_channel(BOT_LOG).send(f'{ctx.author} {up_res}.')
 
     @commands.command()
