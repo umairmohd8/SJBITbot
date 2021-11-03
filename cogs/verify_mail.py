@@ -4,8 +4,7 @@ import datetime
 
 import discord.utils
 from discord.ext import commands
-from private import newDB
-from access import mail
+from access import mail, newDB
 
 BOT_LOG = 846778354157355109
 roles = {'verified': 840568002176614400, 'alum': 902217061692997673, 'first': 842427880675999784,
@@ -24,6 +23,8 @@ class Mail(commands.Cog):
         usn.strip()
         pattern = r'1(j|J)(b|B)\d\d[a-zA-Z][a-zA-Z]\d\d\d$'
         result = re.match(pattern, usn)  # checks for a legit usn
+        if usn[5:7] == "me" or usn[5:7] == "cv":
+            result = False
         return result
 
     def get_code(self):
