@@ -1,4 +1,3 @@
 private
 user.db
-.idea
-.vscode
+.*
