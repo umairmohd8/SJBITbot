@@ -16,7 +16,7 @@ class Logger(commands.Cog):
 
     @commands.command()
     async def ping(self, ctx):
-        await ctx.send('pong!')
+        await ctx.send('pong! {0}s'.format(round(self.bot.latency,1)))
 
 
 def setup(bot):

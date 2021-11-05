@@ -10,15 +10,13 @@ BOT_LOG = 846778354157355109
 bot = commands.Bot(command_prefix='+')
 
 
-"""@bot.event
+@bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(ctx.author.mention + ' Please use the correct argument!')
-    else:
-        print('something is wrong')
-    if isinstance(error, commands.CommandError):
+        await ctx.send(ctx.author.mention + ' Please use the correct argument! ex: +mail 1jb19cs082')
+    elif isinstance(error, commands.CommandError):
         await ctx.send(ctx.author.mention + ' Please use the correct command!')
-        print()"""
+        
 
 
 @bot.command()

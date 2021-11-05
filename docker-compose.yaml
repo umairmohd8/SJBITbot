@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: disbot
+    init: true
+
+    restart: on-failure
+
+    volumes:
+      - .:/disbot
